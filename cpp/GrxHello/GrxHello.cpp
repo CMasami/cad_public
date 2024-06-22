@@ -14,7 +14,7 @@ void cmdHello()
     acutPrintf(_T("\nHello World."));
 }
 
-void cmdHelloMsg()
+void cmdHelloDlg()
 {
     acedAlert(_T("Hello World."));
 }
@@ -22,7 +22,7 @@ void cmdHelloMsg()
 void initApp()
 {
     acedRegCmds->addCommand(_T("ASDK_SAMPLES_HELLOWORLD"), _T("ASDK_HELLOWORLD"), _T("HELLOWORLD"), ACRX_CMD_MODAL, cmdHello);
-    acedRegCmds->addCommand(_T("ASDK_SAMPLES_HELLOWORLD"), _T("ASDK_HELLODLG"), _T("HELLOMSG"), ACRX_CMD_MODAL, cmdHelloMsg);
+    acedRegCmds->addCommand(_T("ASDK_SAMPLES_HELLOWORLD"), _T("ASDK_HELLODLG"), _T("HELLODLG"), ACRX_CMD_MODAL, cmdHelloDlg);
 }
 
 
