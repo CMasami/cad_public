@@ -3,12 +3,14 @@
 
 void cmdAddCircle();
 void cmdAddCircle2();
+void cmdAddCircle3();
 
 // アプリケーションの初期化
 void initApp()
 {
-	acedRegCmds->addCommand(_T("ADDCIRCLE_GROUP"), _T("ADDCIRCLE"), _T("ADDCIRCLE"), ACRX_CMD_SESSION, cmdAddCircle);
-	acedRegCmds->addCommand(_T("ADDCIRCLE_GROUP"), _T("ADDCIRCLE2"), _T("ADDCIRCLE2"), ACRX_CMD_SESSION, cmdAddCircle2);
+	acedRegCmds->addCommand(_T("ADDCIRCLE_GROUP"), _T("ADDCIRCLE"), _T("ADDCIRCLE"), ACRX_CMD_MODAL, cmdAddCircle);
+	acedRegCmds->addCommand(_T("ADDCIRCLE_GROUP"), _T("ADDCIRCLE2"), _T("ADDCIRCLE2"), ACRX_CMD_MODAL, cmdAddCircle2);
+	acedRegCmds->addCommand(_T("ADDCIRCLE_GROUP"), _T("ADDCIRCLE3"), _T("ADDCIRCLE3"), ACRX_CMD_MODAL, cmdAddCircle3);
 }
 
 // アプリケーションの後処理

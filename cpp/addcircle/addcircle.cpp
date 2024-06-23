@@ -85,3 +85,12 @@ void cmdAddCircle2()
 		ads_setvar(L"CIRCLERAD", &rb);
 	}
 }
+
+void cmdAddCircle3()
+{
+	ads_point pt = { 0.0, 0.0, 0.0 };
+	double radius = 10.0;
+	acedCommandS(RTSTR, L"CIRCLE", RT3DPOINT, pt, RTREAL, radius, RTNONE);
+	// 任意の場所に作図
+	acedCommandS(RTSTR, L"CIRCLE", RTSTR, PAUSE, RTSTR, PAUSE, RTNONE);
+}
