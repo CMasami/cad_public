@@ -1,6 +1,7 @@
 ﻿using Itjp.Ijcad.ApplicationServices;
 using Itjp.Ijcad.DatabaseServices;
 using Itjp.Ijcad.EditorInput;
+using Itjp.Ijcad.Geometry;
 using Itjp.Ijcad.Runtime;
 
 namespace addcircle
@@ -45,6 +46,20 @@ namespace addcircle
                     ed.WriteMessage(ex.Message);
                 }
             }
+        }
+
+        [CommandMethod("CSADDCIRCLE2")]
+        public void cmdAddCircle2()
+        {
+            Document doc = Application.DocumentManager.MdiActiveDocument;
+            Editor ed = doc.Editor;
+            Point3d center = new Point3d( 0.0, 0.0, 0.0 );
+            double radius = 10.0;
+            // コマンドの呼び出し 
+            ed.Command("CIRCLE", center, radius);
+            // コマンドを呼び出して、コマンドが終わるまで処理を待つ
+            ed.Command("CIRCLE");
+            ed.WriteMessage("２つの円が描けました。");
         }
     }
 }
