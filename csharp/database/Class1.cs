@@ -7,18 +7,109 @@ namespace hellocs
 {
     public class Class1
     {
-        [CommandMethod("CSHELLO")]
-        public void cmdCsHello()
+        [CommandMethod("CSADDRECORDS")]
+        public void cmdAddTableRecords()
         {
-            Document doc = Application.DocumentManager.MdiActiveDocument;
-            Editor ed = doc.Editor;
-            ed.WriteMessage("\nHello, World.");
+            //APPID[アプリケーション ID](DXF)
+            //BLOCK_RECORD[ブロック レコード](DXF)
+            //DIMSTYLE[寸法スタイル](DXF)
+            //LAYER[画層](DXF)
+            //LTYPE[線種](DXF)
+            //STYLE[文字スタイル](DXF)
+            //UCS[ユーザ座標系](DXF)
+            //VIEW[ビュー](DXF)
+            //VPORT[ビューポート](DXF)
         }
 
-        [CommandMethod("CSHELLOMSG")]
-        public void cmdCsHelloMsg()
+        [CommandMethod("CSADDENTS")]
+        public void cmdAddEntities()
         {
-            Application.ShowAlertDialog("Hello, World");
+            //3DFACE[3D 面](DXF)
+            //3DSOLID[3D ソリッド](DXF)
+            //ACAD_PROXY_ENTITY(DXF)
+            //ARC(DXF)
+            //ATTDEF[属性定義](DXF)
+            //ATTRIB[属性](DXF)
+            //BODY(DXF)
+            //CIRCLE[円](DXF)
+            //COORDINATION MODEL(DXF)
+            //DIMENSION[寸法](DXF)
+            //ELLIPSE[楕円](DXF)
+            //HATCH[ハッチング](DXF)
+            //HELIX[らせん](DXF)
+            //IMAGE[イメージ](DXF)
+            //INSERT[ブロック挿入](DXF)
+            //LEADER[引出線](DXF)
+            //LIGHT[光源](DXF)
+            //LINE[線分](DXF)
+            //LWPOLYLINE(DXF)
+            //MESH(DXF)
+            //MLEADER[マルチ引出線](DXF)
+            //MLEADERSTYLE(DXF)
+            //MLINE[マルチライン](DXF)
+            //MTEXT[マルチ テキスト](DXF)
+            //OLEFRAME[OLE フレーム](DXF)
+            //OLE2FRAME(DXF)
+            //POINT[点](DXF)
+            //POLYLINE[ポリライン](DXF)
+            //RAY[放射線](DXF)
+            //REGION[リージョン](DXF)
+            //SECTION[断面](DXF)
+            //SEQEND[シーケンス終了](DXF)
+            //SHAPE(DXF)
+            //SOLID(DXF)
+            //SPLINE[スプライン](DXF)
+            //SUN(DXF)
+            //SURFACE[サーフェス](DXF)
+            //TABLE(DXF)
+            //TEXT[文字記入](DXF)
+            //TOLERANCE[幾何公差](DXF)
+            //TRACE[太線](DXF)
+            //UNDERLAY[アンダーレイ](DXF)
+            //VERTEX(DXF)
+            //VIEWPORT(DXF)
+            //WIPEOUT[ワイプアウト](DXF)
+            //XLINE(DXF)
+        }
+
+        [CommandMethod("CSADDOBJS")]
+        void cmdAddDatabaseObjects()
+        {
+            //ACAD_PROXY_OBJECT[ACAD プロキシ オブジェクト](DXF)
+            //ACDBDICTIONARYWDFLT(DXF)
+            //ACDBPLACEHOLDER(DXF)
+            //ACDBNAVISWORKSMODELDEF(DXF)
+            //DATATABLE[データ テーブル](DXF)
+            //DICTIONARY[ディクショナリ](DXF)
+            //DICTIONARYVAR[ディクショナリ変数](DXF)
+            //DIMASSOC[自動調整管理](DXF)
+            //FIELD[フィールド](DXF)
+            //GEODATA(DXF)
+            //GROUP[グループ](DXF)
+            //IDBUFFER[ID バッファ](DXF)
+            //IMAGEDEF[イメージ定義](DXF)
+            //IMAGEDEF_REACTOR[イメージ定義リアクタ](DXF)
+            //LAYER_FILTER[画層フィルタ](DXF)
+            //LAYER_INDEX[画層インデックス](DXF)
+            //LAYOUT[レイアウト](DXF)
+            //LIGHTLIST[光源一覧](DXF)
+            //MATERIAL[マテリアル](DXF)
+            //MLINESTYLE[マルチライン スタイル](DXF)
+            //OBJECT_PTR[オブジェクト プリンタ](DXF)
+            //PLOTSETTINGS[印刷設定](DXF)
+            //RASTERVARIABLES[ラスター変数](DXF)
+            //RENDER(DXF)
+            //SECTION[断面](DXF)
+            //SORTENTSTABLE[SORTENTS テーブル](DXF)
+            //SPATIAL_FILTER[空間フィルタ](DXF)
+            //SPATIAL_INDEX[空間インデックス](DXF)
+            //SUNSTUDY[日照シミュレーション](DXF)
+            //TABLESTYLE[表スタイル](DXF)
+            //UNDERLAYDEFINITION[アンダーレイ定義](DXF)
+            //VBA_PROJECT[VBA プロジェクト](DXF)
+            //VISUALSTYLE[表示スタイル](DXF)
+            //WIPEOUTVARIABLES(DXF)
+            //XRECORD[拡張レコード](DXF)
         }
     }
 }
