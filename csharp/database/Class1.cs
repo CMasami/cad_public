@@ -1,7 +1,10 @@
 ﻿using Itjp.Ijcad.ApplicationServices;
 using Itjp.Ijcad.DatabaseServices;
 using Itjp.Ijcad.EditorInput;
+using Itjp.Ijcad.Geometry;
+using Itjp.Ijcad.GraphicsInterface;
 using Itjp.Ijcad.Runtime;
+using System;
 
 namespace hellocs
 {
@@ -10,15 +13,158 @@ namespace hellocs
         [CommandMethod("CSADDRECORDS")]
         public void cmdAddTableRecords()
         {
+            Document doc = Application.DocumentManager.MdiActiveDocument;
+            Editor ed = doc.Editor;
+            Database db = doc.Database;
+
             //APPID[アプリケーション ID](DXF)
+            using(Transaction tr = doc.TransactionManager.StartTransaction()) {
+                RegAppTable tbl = tr.GetObject(db.RegAppTableId, OpenMode.ForWrite) as RegAppTable;
+                if(!tbl.Has("TEST"))
+                {
+                    RegAppTableRecord rec = new RegAppTableRecord();
+                    rec.Name = "TEST";
+                    tbl.Add(rec);
+                    tr.AddNewlyCreatedDBObject(rec,true);
+                    ed.WriteMessage("\nAdd {0} {1}[{2}]",rec.GetRXClass().Name, rec.Name,rec.Handle);
+                }
+                tr.Commit();
+            }
+
             //BLOCK_RECORD[ブロック レコード](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                BlockTable tbl = tr.GetObject(db.BlockTableId, OpenMode.ForWrite) as BlockTable;
+                if (!tbl.Has("TEST"))
+                {
+                    BlockTableRecord rec = new BlockTableRecord();
+                    rec.Name = "TEST";
+                    tbl.Add(rec);
+                    tr.AddNewlyCreatedDBObject(rec, true);
+                    ed.WriteMessage("\nAdd {0} {1}[{2}]", rec.GetRXClass().Name, rec.Name, rec.Handle);
+                    Line ent = new Line();
+                    ent.SetDatabaseDefaults(db);
+                    ent.StartPoint = new Point3d(0,0,0);
+                    ent.EndPoint = new Point3d(10, 10, 0);
+                    rec.AppendEntity(ent);
+                    tr.AddNewlyCreatedDBObject(ent, true);
+                    ed.WriteMessage("\nAdd {0}[{1}]", ent.GetRXClass().Name, ent.Handle);
+                }
+                tr.Commit();
+            }
+
             //DIMSTYLE[寸法スタイル](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                DimStyleTable tbl = tr.GetObject(db.DimStyleTableId, OpenMode.ForWrite) as DimStyleTable;
+                if (!tbl.Has("TEST"))
+                {
+                    DimStyleTableRecord rec = new DimStyleTableRecord();
+                    rec.CopyFrom(db.GetDimstyleData());
+                    rec.Name = "TEST";
+                    tbl.Add(rec);
+                    tr.AddNewlyCreatedDBObject(rec, true);
+                    ed.WriteMessage("\nAdd {0} {1}[{2}]", rec.GetRXClass().Name, rec.Name, rec.Handle);
+                }
+                tr.Commit();
+            }
+
             //LAYER[画層](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                LayerTable tbl = tr.GetObject(db.LayerTableId, OpenMode.ForWrite) as LayerTable;
+                if (!tbl.Has("TEST"))
+                {
+                    LayerTableRecord rec = new LayerTableRecord();
+                    rec.Name = "TEST";
+                    tbl.Add(rec);
+                    tr.AddNewlyCreatedDBObject(rec, true);
+                    ed.WriteMessage("\nAdd {0} {1}[{2}]", rec.GetRXClass().Name, rec.Name, rec.Handle);
+                }
+                tr.Commit();
+            }
+
             //LTYPE[線種](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                LinetypeTable tbl = tr.GetObject(db.LinetypeTableId, OpenMode.ForWrite) as LinetypeTable;
+                if (!tbl.Has("TEST"))
+                {
+                    LinetypeTableRecord rec = new LinetypeTableRecord();
+                    rec.Name = "TEST";
+                    rec.NumDashes = 2;
+                    rec.SetDashLengthAt(0, 12.0);
+                    rec.SetDashLengthAt(1, -6.0);
+                    tbl.Add(rec);
+                    tr.AddNewlyCreatedDBObject(rec, true);
+                    ed.WriteMessage("\nAdd {0} {1}[{2}]", rec.GetRXClass().Name, rec.Name, rec.Handle);
+                }
+                tr.Commit();
+            }
+
             //STYLE[文字スタイル](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                TextStyleTable tbl = tr.GetObject(db.TextStyleTableId, OpenMode.ForWrite) as TextStyleTable;
+                if (!tbl.Has("TEST"))
+                {
+                    TextStyleTableRecord rec = new TextStyleTableRecord();
+                    rec.Name = "TEST";
+                    rec.Font = new FontDescriptor("MS UI Gothic", false, false, 128, 0);
+                    tbl.Add(rec);
+                    tr.AddNewlyCreatedDBObject(rec, true);
+                    ed.WriteMessage("\nAdd {0} {1}[{2}]", rec.GetRXClass().Name, rec.Name, rec.Handle);
+                }
+                tr.Commit();
+            }
+
             //UCS[ユーザ座標系](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                UcsTable tbl = tr.GetObject(db.UcsTableId, OpenMode.ForWrite) as UcsTable;
+                if (!tbl.Has("TEST"))
+                {
+                    UcsTableRecord rec = new UcsTableRecord();
+                    rec.Name = "TEST";
+                    rec.Origin = new Point3d(10, 10, 0);
+                    rec.XAxis = Vector3d.XAxis.RotateBy(Math.PI / 45, Vector3d.ZAxis);
+                    rec.YAxis = Vector3d.YAxis.RotateBy(Math.PI / 45, Vector3d.ZAxis);
+                    tbl.Add(rec);
+                    tr.AddNewlyCreatedDBObject(rec, true);
+                    ed.WriteMessage("\nAdd {0} {1}[{2}]", rec.GetRXClass().Name, rec.Name, rec.Handle);
+                }
+                tr.Commit();
+            }
+
             //VIEW[ビュー](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                ViewTable tbl = tr.GetObject(db.ViewTableId, OpenMode.ForWrite) as ViewTable;
+                if (!tbl.Has("TEST"))
+                {
+                    ViewTableRecord rec = new ViewTableRecord();
+                    rec.Name = "TEST";
+                    tbl.Add(rec);
+                    tr.AddNewlyCreatedDBObject(rec, true);
+                    ed.WriteMessage("\nAdd {0} {1}[{2}]", rec.GetRXClass().Name, rec.Name, rec.Handle);
+                }
+                tr.Commit();
+            }
+
             //VPORT[ビューポート](DXF)
+            //using (Transaction tr = doc.TransactionManager.StartTransaction())
+            //{
+            //    ViewportTable tbl = tr.GetObject(db.ViewportTableId, OpenMode.ForWrite) as ViewportTable;
+            //    if (!tbl.Has("TEST"))
+            //    {
+            //        ViewportTableRecord rec = new ViewportTableRecord();
+            //        tbl.Add(rec);
+            //        tr.AddNewlyCreatedDBObject(rec, true);
+            //        ed.WriteMessage("\nAdd {0} {1}[{2}]", rec.GetRXClass().Name, rec.Name, rec.Handle);
+            //    }
+            //    tr.Commit();
+            //}
+
         }
 
         [CommandMethod("CSADDENTS")]
