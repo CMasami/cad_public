@@ -152,6 +152,7 @@ namespace hellocs
             }
 
             //VPORT[ビューポート](DXF)
+            //VPORTはVPORTコマンドで作成したほうがよい
             //using (Transaction tr = doc.TransactionManager.StartTransaction())
             //{
             //    ViewportTable tbl = tr.GetObject(db.ViewportTableId, OpenMode.ForWrite) as ViewportTable;
@@ -170,52 +171,398 @@ namespace hellocs
         [CommandMethod("CSADDENTS")]
         public void cmdAddEntities()
         {
+            Document doc = Application.DocumentManager.MdiActiveDocument;
+            Editor ed = doc.Editor;
+            Database db = doc.Database;
+
             //3DFACE[3D 面](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new Face();
+                ent.SetDatabaseDefaults(db);
+                ent.SetVertexAt(0, new Point3d(0, 0, 0));
+                ent.SetVertexAt(1, new Point3d(10, 0, 0));
+                ent.SetVertexAt(2, new Point3d(10,10, 0));
+                ent.SetVertexAt(3, new Point3d(0, 10, 0));
+                var space = tr.GetObject(db.CurrentSpaceId,OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
+
             //3DSOLID[3D ソリッド](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new Solid3d();
+                ent.SetDatabaseDefaults(db);
+                ent.CreateBox(10,10,10);
+                var tfm = Matrix3d.Displacement(new Vector3d(25, 5, 5));
+                ent.TransformBy(tfm);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
+
             //ACAD_PROXY_ENTITY(DXF)
             //ARC(DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new Arc();
+                ent.SetDatabaseDefaults(db);
+                ent.Center = new Point3d(30,0,0);
+                ent.Radius = 5;
+                ent.StartAngle = 0;
+                ent.EndAngle = Math.PI;
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //ATTDEF[属性定義](DXF)
             //ATTRIB[属性](DXF)
             //BODY(DXF)
             //CIRCLE[円](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new Circle();
+                ent.SetDatabaseDefaults(db);
+                ent.Center = new Point3d(40, 0, 0);
+                ent.Radius = 5;
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //COORDINATION MODEL(DXF)
             //DIMENSION[寸法](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new RotatedDimension();
+                ent.SetDatabaseDefaults(db);
+                ent.XLine1Point = new Point3d(50, 0, 0);
+                ent.XLine2Point = new Point3d(60, 0, 0);
+                ent.DimLinePoint = new Point3d(55,8,0);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //ELLIPSE[楕円](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new Ellipse();
+                ent.SetDatabaseDefaults(db);
+                ent.Set(new Point3d(65, 0, 0), Vector3d.ZAxis, new Vector3d(5,5,0), 0.8, 0, 2 * Math.PI);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //HATCH[ハッチング](DXF)
             //HELIX[らせん](DXF)
             //IMAGE[イメージ](DXF)
             //INSERT[ブロック挿入](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var tbl = tr.GetObject(db.BlockTableId,OpenMode.ForRead) as BlockTable;
+                if(tbl.Has("TEST"))
+                {
+                    var recId = tbl["TEST"];
+                    var ent = new BlockReference(new Point3d(0, 30, 0), recId);
+                    ent.SetDatabaseDefaults(db);
+                    var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                    space.AppendEntity(ent);
+                    tr.AddNewlyCreatedDBObject(ent, true);
+                    ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                }
+                tr.Commit();
+            }
             //LEADER[引出線](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new Leader();
+                ent.SetDatabaseDefaults(db);
+                ent.SetVertexAt(0,new Point3d(10, 30, 0));
+                ent.SetVertexAt(1,new Point3d(15, 35, 0));
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
+            /*
             //LIGHT[光源](DXF)
             //LINE[線分](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new RotatedDimension();
+                ent.SetDatabaseDefaults(db);
+                ent.XLine1Point = new Point3d(50, 0, 0);
+                ent.XLine2Point = new Point3d(60, 0, 0);
+                ent.DimLinePoint = new Point3d(55, 8, 0);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //LWPOLYLINE(DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new RotatedDimension();
+                ent.SetDatabaseDefaults(db);
+                ent.XLine1Point = new Point3d(50, 0, 0);
+                ent.XLine2Point = new Point3d(60, 0, 0);
+                ent.DimLinePoint = new Point3d(55, 8, 0);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //MESH(DXF)
             //MLEADER[マルチ引出線](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new RotatedDimension();
+                ent.SetDatabaseDefaults(db);
+                ent.XLine1Point = new Point3d(50, 0, 0);
+                ent.XLine2Point = new Point3d(60, 0, 0);
+                ent.DimLinePoint = new Point3d(55, 8, 0);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //MLEADERSTYLE(DXF)
             //MLINE[マルチライン](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new RotatedDimension();
+                ent.SetDatabaseDefaults(db);
+                ent.XLine1Point = new Point3d(50, 0, 0);
+                ent.XLine2Point = new Point3d(60, 0, 0);
+                ent.DimLinePoint = new Point3d(55, 8, 0);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //MTEXT[マルチ テキスト](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new RotatedDimension();
+                ent.SetDatabaseDefaults(db);
+                ent.XLine1Point = new Point3d(50, 0, 0);
+                ent.XLine2Point = new Point3d(60, 0, 0);
+                ent.DimLinePoint = new Point3d(55, 8, 0);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //OLEFRAME[OLE フレーム](DXF)
             //OLE2FRAME(DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new RotatedDimension();
+                ent.SetDatabaseDefaults(db);
+                ent.XLine1Point = new Point3d(50, 0, 0);
+                ent.XLine2Point = new Point3d(60, 0, 0);
+                ent.DimLinePoint = new Point3d(55, 8, 0);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //POINT[点](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new RotatedDimension();
+                ent.SetDatabaseDefaults(db);
+                ent.XLine1Point = new Point3d(50, 0, 0);
+                ent.XLine2Point = new Point3d(60, 0, 0);
+                ent.DimLinePoint = new Point3d(55, 8, 0);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //POLYLINE[ポリライン](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new RotatedDimension();
+                ent.SetDatabaseDefaults(db);
+                ent.XLine1Point = new Point3d(50, 0, 0);
+                ent.XLine2Point = new Point3d(60, 0, 0);
+                ent.DimLinePoint = new Point3d(55, 8, 0);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //RAY[放射線](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new RotatedDimension();
+                ent.SetDatabaseDefaults(db);
+                ent.XLine1Point = new Point3d(50, 0, 0);
+                ent.XLine2Point = new Point3d(60, 0, 0);
+                ent.DimLinePoint = new Point3d(55, 8, 0);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //REGION[リージョン](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new RotatedDimension();
+                ent.SetDatabaseDefaults(db);
+                ent.XLine1Point = new Point3d(50, 0, 0);
+                ent.XLine2Point = new Point3d(60, 0, 0);
+                ent.DimLinePoint = new Point3d(55, 8, 0);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //SECTION[断面](DXF)
             //SEQEND[シーケンス終了](DXF)
             //SHAPE(DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new RotatedDimension();
+                ent.SetDatabaseDefaults(db);
+                ent.XLine1Point = new Point3d(50, 0, 0);
+                ent.XLine2Point = new Point3d(60, 0, 0);
+                ent.DimLinePoint = new Point3d(55, 8, 0);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //SOLID(DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new RotatedDimension();
+                ent.SetDatabaseDefaults(db);
+                ent.XLine1Point = new Point3d(50, 0, 0);
+                ent.XLine2Point = new Point3d(60, 0, 0);
+                ent.DimLinePoint = new Point3d(55, 8, 0);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //SPLINE[スプライン](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new RotatedDimension();
+                ent.SetDatabaseDefaults(db);
+                ent.XLine1Point = new Point3d(50, 0, 0);
+                ent.XLine2Point = new Point3d(60, 0, 0);
+                ent.DimLinePoint = new Point3d(55, 8, 0);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //SUN(DXF)
             //SURFACE[サーフェス](DXF)
             //TABLE(DXF)
             //TEXT[文字記入](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new RotatedDimension();
+                ent.SetDatabaseDefaults(db);
+                ent.XLine1Point = new Point3d(50, 0, 0);
+                ent.XLine2Point = new Point3d(60, 0, 0);
+                ent.DimLinePoint = new Point3d(55, 8, 0);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //TOLERANCE[幾何公差](DXF)
             //TRACE[太線](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new RotatedDimension();
+                ent.SetDatabaseDefaults(db);
+                ent.XLine1Point = new Point3d(50, 0, 0);
+                ent.XLine2Point = new Point3d(60, 0, 0);
+                ent.DimLinePoint = new Point3d(55, 8, 0);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //UNDERLAY[アンダーレイ](DXF)
             //VERTEX(DXF)
             //VIEWPORT(DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new RotatedDimension();
+                ent.SetDatabaseDefaults(db);
+                ent.XLine1Point = new Point3d(50, 0, 0);
+                ent.XLine2Point = new Point3d(60, 0, 0);
+                ent.DimLinePoint = new Point3d(55, 8, 0);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //WIPEOUT[ワイプアウト](DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new RotatedDimension();
+                ent.SetDatabaseDefaults(db);
+                ent.XLine1Point = new Point3d(50, 0, 0);
+                ent.XLine2Point = new Point3d(60, 0, 0);
+                ent.DimLinePoint = new Point3d(55, 8, 0);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
             //XLINE(DXF)
+            using (Transaction tr = doc.TransactionManager.StartTransaction())
+            {
+                var ent = new RotatedDimension();
+                ent.SetDatabaseDefaults(db);
+                ent.XLine1Point = new Point3d(50, 0, 0);
+                ent.XLine2Point = new Point3d(60, 0, 0);
+                ent.DimLinePoint = new Point3d(55, 8, 0);
+                var space = tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite) as BlockTableRecord;
+                space.AppendEntity(ent);
+                tr.AddNewlyCreatedDBObject(ent, true);
+                ed.WriteMessage("\nAdd {0}[{1}]", ent.GetType().Name, ent.Handle);
+                tr.Commit();
+            }
+            */
         }
 
         [CommandMethod("CSADDOBJS")]
