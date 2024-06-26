@@ -2,16 +2,21 @@
 
 #include "pch.h"
 
+void cmdAddTableRecords();
+void cmdAddEntities();
+void cmdAddDatabaseObjects();
+
 void initApp()
 {
-    acedRegCmds->addCommand(_T("ASDK_SAMPLES_HELLOWORLD"), _T("ASDK_HELLOWORLD"), _T("HELLOWORLD"), ACRX_CMD_MODAL, cmdHello);
-    acedRegCmds->addCommand(_T("ASDK_SAMPLES_HELLOWORLD"), _T("ASDK_HELLODLG"), _T("HELLODLG"), ACRX_CMD_MODAL, cmdHelloDlg);
+    acedRegCmds->addCommand(TESTDB_GROUP_NAME, _T("ADDRECORDS"), _T("ADDRECORDS"), ACRX_CMD_MODAL, cmdAddTableRecords);
+    acedRegCmds->addCommand(TESTDB_GROUP_NAME, _T("ADDENTS"), _T("ADDENTS"), ACRX_CMD_MODAL, cmdAddEntities);
+	acedRegCmds->addCommand(TESTDB_GROUP_NAME, _T("ADDOBJS"), _T("ADDOBJS"), ACRX_CMD_MODAL, cmdAddDatabaseObjects);
 }
 
 
 void unloadApp()
 {
-    acedRegCmds->removeGroup(_T("ASDK_SAMPLES_HELLOWORLD"));
+    acedRegCmds->removeGroup(TESTDB_GROUP_NAME);
 }
 
 // ARX/GRXモジュールのエントリーポイント
