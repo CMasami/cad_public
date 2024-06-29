@@ -67,14 +67,35 @@
 
 (defun C:LSPAddEnts()
 	;;3DFACE[3D 面](DXF)
+  (entmake '((0 . "3DFACE")(10 0.0 0.0 0.0)(11 1.0 0.0 0.0)(12 1.0 1.0 0.0)(13 0.0 1.0 0.0)))
 	;;3DSOLID[3D ソリッド](DXF)
+  ;;基本形ならコマンドで作成することが可能です
+  (command "BOX" '(0.0 0.0 0.0) '(10.0 10.0 0.0) 10.0 )
+  (command "PYRAMID" '(0.0 0.0 0.0) 10.0 20.0 )
+  (command "CYLINDER" '(0.0 0.0 0.0) 10.0 20.0 )
+  (command "CONE" '(0.0 0.0 0.0) 10.0 20.0 )
+  (command "SPHERE" '(0.0 0.0 0.0) 10.0 )
+  (command "WEDGE" '(0.0 0.0 0.0) '(10.0 10.0 0.0) 20.0)
+  (command "TORUS" '(0.0 0.0 0.0) 20.0 5.0)
+  (command "POLYSOLID" '(0.0 0.0 0.0) '(10.0 0.0 0.0) '(10.0 10.0 0.0) "")	
 	;;ACAD_PROXY_ENTITY(DXF)
+  ;;カスタム図形のアプリケーションが存在しないときに出現します。
+  ;;LISPで作る方法はありません。
 	;;ARC(DXF)
+  ;;開始角度、終了角度の単位はラジアン
+  (entmake '((0 . "ARC")(10 0.0 0.0 0.0)(40 . 5.0)(50 . 0.0)(51 . 1.0)))
 	;;ATTDEF[属性定義](DXF)
+  ;;位置合わせを省略すると 0=左 0=基準線になる
+  (entmake '((0 . "ATTDEF")(10 0.0 0.0 0.0)(40 . 2.5)(1 . "something to enter.")(2 . "TEST")))
 	;;ATTRIB[属性](DXF)
+  ;;INSERTの従属図形として追加可能
+  ;;位置合わせを省略すると 0=左 0=基準線になる
 	;;BODY(DXF)
+  ;;最小限のLISP式では作れない。
 	;;CIRCLE[円](DXF)
+  (entmake '((0 . "CIRCLE")(10 0.0 0.0 0.0)(40 . 5.0)))
 	;;COORDINATION MODEL(DXF)
+  ;;Navis Works からインポートされる図形らしい
 	;;DIMENSION[寸法](DXF)
 	;;ELLIPSE[楕円](DXF)
 	;;HATCH[ハッチング](DXF)
@@ -90,6 +111,8 @@
 	;;MLEADERSTYLE(DXF)
 	;;MLINE[マルチライン](DXF)
 	;;MTEXT[マルチ テキスト](DXF)
+  ;;位置合わせを省略すると 1=左上になる
+  (entmake '((0 . "MTEXT")(10 0.0 0.0 0.0)(40 . 2.5)(1 . "something else")))
 	;;OLEFRAME[OLE フレーム](DXF)
 	;;OLE2FRAME(DXF)
 	;;POINT[点](DXF)
@@ -105,6 +128,8 @@
 	;;SURFACE[サーフェス](DXF)
 	;;TABLE(DXF)
 	;;TEXT[文字記入](DXF)
+  ;;位置合わせを省略すると 0=左 0=基準線になる
+  (entmake '((0 . "TEXT")(10 0.0 0.0 0.0)(40 . 2.5)(1 . "something else")))
 	;;TOLERANCE[幾何公差](DXF)
 	;;TRACE[太線](DXF)
 	;;UNDERLAY[アンダーレイ](DXF)
