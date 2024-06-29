@@ -87,9 +87,6 @@
 	;;ATTDEF[属性定義](DXF)
   ;;位置合わせを省略すると 0=左 0=基準線になる
   (entmake '((0 . "ATTDEF")(10 0.0 0.0 0.0)(40 . 2.5)(1 . "something to enter.")(2 . "TEST")))
-	;;ATTRIB[属性](DXF)
-  ;;INSERTの従属図形として追加可能
-  ;;位置合わせを省略すると 0=左 0=基準線になる
 	;;BODY(DXF)
   ;;最小限のLISP式では作れない。
 	;;CIRCLE[円](DXF)
@@ -97,14 +94,43 @@
 	;;COORDINATION MODEL(DXF)
   ;;Navis Works からインポートされる図形らしい
 	;;DIMENSION[寸法](DXF)
+  ;;0 = 回転、水平、または垂直寸法
+  ;;角度は省略されていると水平寸法になる
+  ;;垂直寸法は 90°で回転寸法はその角度を指定する
+  (entmake '((0 . "DIMENSION")(70 . 0)(10 5.0 10.0 0.0)(13 0.0 0.0 0.0)(14 10.0 0.0 0.0)))
+  (entmake  (append '((0 . "DIMENSION")(70 . 0)(10 90.0 50.0 0.0)(13 100.0 0.0 0.0)(14 100.0 100.0 0.0)) (list (cons 50 (/ PI 2.0)))))
+  ;;1 = 平行寸法
+  (entmake '((0 . "DIMENSION")(70 . 1)(10 5.0 10.0 0.0)(13 0.0 0.0 0.0)(14 10.0 0.0 0.0)))
+  ;;2 = 角度２線寸法 計測した線分の始点(15)・終点(10)、始点(14)・終点(13) と寸法円弧上の点(16)
+  (entmake '((0 . "DIMENSION") (70 . 2) (10 17.339 5.24438 0.0) (13 4.99755 12.9437 0.0) (14 9.30009 6.48986 0.0) (15 9.30009 6.48986 0.0) (16 19.0327 13.396 0.0)))
+  ;;3 = 直径寸法 円の中心を通る直線上の２点
+  (entmake '((0 . "DIMENSION")(70 . 3)(10 5.0 0.0 0.0)(15 -5.0 0.0 0.0)))
+  ;;4 = 半径寸法 中心と円周上の点
+  (entmake '((0 . "DIMENSION")(70 . 4)(10 0.0 0.0 0.0)(15 0.0 5.0 0.0)))
+  ;;5 = 角度 3 点寸法 寸法円弧上の点(10)、円弧の中心(15)、計測した円弧の両端点(13)、(14)
+  (entmake '((0 . "DIMENSION")(70 . 5)(10 13.4575 17.7525 0.0) (13 11.4514 9.54692 0.0) (14 1.60082 13.5098 0.0) (15 5.30357 8.48952 0.0)))
+  ;;6 = 座標寸法(X値) 70 = Y値
+  (entmake '((0 . "DIMENSION") (70 . 6) (13 5.0 8.0 0.0) (14 20.0 8.0 0.0)))
+  (entmake '((0 . "DIMENSION") (70 . 70) (13 5.0 8.0 0.0) (14 5.0 20.0 0.0)))
 	;;ELLIPSE[楕円](DXF)
 	;;HATCH[ハッチング](DXF)
 	;;HELIX[らせん](DXF)
 	;;IMAGE[イメージ](DXF)
 	;;INSERT[ブロック挿入](DXF)
+	;;ATTRIB[属性](DXF)
+	;;SEQEND[シーケンス終了](DXF)
+  (if (tblsearch "BLOCK" "TEST")
+    (progn
+      (entmake '((0 . "INSERT")(2 . "TEST")(10 10.0 10.0 )(66 . 1)))
+      (entmake '((0 . "ATTRIB")(2 . "TEST")(10 12.0 12.0 0.0)(1 . "Sample text")))
+      (entmake '((0 . "SEQEND")))
+    )
+    (princ "\nNo block \"TEST\".")
+  )
 	;;LEADER[引出線](DXF)
 	;;LIGHT[光源](DXF)
 	;;LINE[線分](DXF)
+  (entmake '((0 . "LINE")(10 0.0 0.0 0.0)(11 1.0 1.0 0.0)))
 	;;LWPOLYLINE(DXF)
 	;;MESH(DXF)
 	;;MLEADER[マルチ引出線](DXF)
@@ -114,15 +140,27 @@
   ;;位置合わせを省略すると 1=左上になる
   (entmake '((0 . "MTEXT")(10 0.0 0.0 0.0)(40 . 2.5)(1 . "something else")))
 	;;OLEFRAME[OLE フレーム](DXF)
+  ;;今は作ることができません
 	;;OLE2FRAME(DXF)
 	;;POINT[点](DXF)
+  (setvar "PDMODE" 3)
+  (entmake '((0 . "POINT")(10 5.0 5.0 0.0)))
 	;;POLYLINE[ポリライン](DXF)
+	;;VERTEX(DXF)
+	;;SEQEND[シーケンス終了](DXF)
+  (entmake '((0 . "POLYLINE")( 70 . 1 )))
+  (entmake '((0 . "VERTEX")(10 10.0 10.0 0.0)))
+  (entmake '((0 . "VERTEX")(10 20.0 10.0 0.0)))
+  (entmake '((0 . "VERTEX")(10 20.0 20.0 0.0)))
+  (entmake '((0 . "VERTEX")(10 10.0 20.0 0.0)))
+  (entmake '((0 . "SEQEND")))
 	;;RAY[放射線](DXF)
+  (entmake '((0 . "RAY")(10 20.0 0.0 0.0)(11 1.0 -1.0 0.0)))
 	;;REGION[リージョン](DXF)
 	;;SECTION[断面](DXF)
-	;;SEQEND[シーケンス終了](DXF)
 	;;SHAPE(DXF)
 	;;SOLID(DXF)
+  (entmake '((0 . "SOLID")(10 0.0 0.0 0.0)(11 1.0 0.0 0.0)(12 0.0 1.0 0.0)(13 1.0 1.0 0.0)))
 	;;SPLINE[スプライン](DXF)
 	;;SUN(DXF)
 	;;SURFACE[サーフェス](DXF)
@@ -132,11 +170,12 @@
   (entmake '((0 . "TEXT")(10 0.0 0.0 0.0)(40 . 2.5)(1 . "something else")))
 	;;TOLERANCE[幾何公差](DXF)
 	;;TRACE[太線](DXF)
+  (entmake '((0 . "TRACE")(10 0.0 0.0 0.0)(11 1.0 0.0 0.0)(12 0.0 1.0 0.0)(13 1.0 1.0 0.0)))
 	;;UNDERLAY[アンダーレイ](DXF)
-	;;VERTEX(DXF)
-	;;VIEWPORT(DXF)
 	;;WIPEOUT[ワイプアウト](DXF)
 	;;XLINE(DXF)
+  (entmake '((0 . "XLINE")(10 18.0 0.0 0.0)(11 1.0 -1.0 0.0)))
+	;;VIEWPORT(DXF)
 )
 
 (defun C:LSPAddObjs()
