@@ -5,14 +5,64 @@
 
 (defun C:LSPAddRecs()
 	;;APPID[アプリケーション ID](DXF)
+  ;; アプリケーションID登録のための regapp 関数を使う
+  ;; 追加できたときは名前を、既にあるときは nil を返す
+  (if (not (tblsearch "APPID" "TEST"))
+    (regapp "TEST")
+  )
 	;;BLOCK_RECORD[ブロック レコード](DXF)
+  ;; BLOCK ブロック内の図形 ENDBLK を続けて entmake する
+  ;; ブロックの置き換えも同じ方法で行う
+  (if (not (tblsearch "BLOCK" "TEST"))
+    (progn
+      (entmake '((0 . "BLOCK")(2 . "TEST") (10 0.0 0.0 0.0)))
+      (entmake '((0 . "LINE")(8 . "0")(6 . "ByBlock")(62 . 0)(10 -5 -5 0)(11 5 5 0)))
+      (entmake '((0 . "LINE")(8 . "0")(6 . "ByBlock")(62 . 0)(10 -5 5 0)(11 5 -5 0)))
+      (entmake '((0 . "ENDBLK")))
+    )
+  )
 	;;DIMSTYLE[寸法スタイル](DXF)
+  ;; IJCADでは Standard 寸法スタイルと同じものが作られる
+  (if (not (tblsearch "DIMSTYLE" "TEST"))
+    (entmake '((0 . "DIMSTYLE")(2 . "TEST")))
+  )
 	;;LAYER[画層](DXF)
+  (if (not (tblsearch "LAYER" "TEST"))
+    (entmake '((0 . "LAYER")(2 . "TEST")))
+  )
 	;;LTYPE[線種](DXF)
+  ;;線種パターンを指定しないと実線ができる
+  (if (not (tblsearch "LTYPE" "TEST"))
+    (entmake '((0 . "LTYPE")(2 . "TEST")(73 . 2)(40 . 18.0)(49 . 12.0)(49 . -6.0)))
+  )
 	;;STYLE[文字スタイル](DXF)
+  ;; シェイプフォントとビッグフォントを指定する
+  (if (not (tblsearch "STYLE" "TEST"))
+    (entmake '((0 . "STYLE")(2 . "TEST")(3 . "exthalf2.shx")(4 . "extfont2.shx")))
+  )
+  ;; TrueTypeフォントを指定する。
+  ;; IJCAD は TTF/TTCファイルを指定する必要あり。
+  (if (not (tblsearch "STYLE" "TTF"))
+    (entmake '((0 . "STYLE")(2 . "TTF")(3 . "MSGothic.ttc")(-3 ("ACAD" (1000 . "MS Gothic")(1071 . 0 )))))
+  )
 	;;UCS[ユーザ座標系](DXF)
+  ;;UCS原点、X方向、Y方向を指定しないとWCSと同じものができる。
+  (if (not (tblsearch "UCS" "TEST"))
+    (entmake '((0 . "UCS")(2 . "TEST")(10 0.0 0.0 0.0)(11 0.0 1.0 0.0)(12 1.0 0.0 0.0)))
+  )
 	;;VIEW[ビュー](DXF)
+  ;;現在の標示画面を名前の付いたビュー TESTとして保存するなら次のようにする
+  (if (not (tblsearch "VIEW" "TEST"))
+    (command "-VIEW" "Save" "TEST")
+  )
 	;;VPORT[ビューポート](DXF)
+  ;;名前のついたタイルビューポートはコマンドで作ったほうがよい
+  (setvar "TILEMODE" 1)
+  (if (not (tblsearch "VPORT" "TEST"))
+    (command "VPORTS" "2" "V" "VPORTS" "S" "TEST" "VPORTS" "SI")
+  )
+  ;式の戻り値 nil の表示を抑制する
+  (princ)
 )
 
 (defun C:LSPAddEnts()
