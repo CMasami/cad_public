@@ -136,20 +136,42 @@
     (princ "\nNo block \"TEST\".")
   )
 	;;LEADER[引出線](DXF)
+  ;; 矢印フラグ(71)=有効(1),引き出し線(72)=直線(0),注釈(73)=なし(3) 頂点数(76)は無くても描ける
+  (entmake '((0 . "LEADER")(10 323.0 10.5 0.0) (10 344.525 32.3898 0.0) (10 347.025 32.3898 0.0)))
 	;;LIGHT[光源](DXF)
+  ;; 白い光のスポットライトを作成します。照明の位置(10)と照明の目標点(11)は必須。
+  (entmake '((0 . "LIGHT")(10 100.0 100.0 100.0) (11 0.0 0.0 0.0)))
 	;;LINE[線分](DXF)
   (entmake '((0 . "LINE")(10 0.0 0.0 0.0)(11 1.0 1.0 0.0)))
 	;;LWPOLYLINE(DXF)
+  ;; ポリラインフラグ(70)を省略すると開いたポリラインになる
+  (entmake '((0 . "LWPOLYLINE")(90 . 4)(10 174.5 10.5)(10 471.5 10.5)(10 471.5 -199.5)(10 174.5 -199.5)))
 	;;MESH(DXF)
+  ;;基本形ならコマンドで作成することが可能です
+  (command "MESH" "BOX" '(0.0 0.0 0.0) '(10.0 10.0 0.0) 10.0 )
+  (command "MESH" "CONE" '(0.0 0.0 0.0) 10.0 20.0 )
+  (command "MESH" "CYLINDER" '(0.0 0.0 0.0) 10.0 20.0 )
+  (command "MESH" "PYRAMID" '(0.0 0.0 0.0) 10.0 20.0 )
+  (command "MESH" "SPHERE" '(0.0 0.0 0.0) 10.0 )
+  (command "MESH" "WEDGE" '(0.0 0.0 0.0) '(10.0 10.0 0.0) 20.0)
+  (command "MESH" "TORUS" '(0.0 0.0 0.0) 20.0 5.0)
 	;;MLEADER[マルチ引出線](DXF)
-	;;MLEADERSTYLE(DXF)
+  ;; H=arrow Head 引き出し線の矢印の位置、終点の位置、文字の内容 の順
+  ;; L=Landing  引き出し線の終点の位置、矢印の位置、文字の内容 の順
+  ;; C=Contents 文字の範囲と内容から指定するが command 関数ではうまくいかない。
+  ;; 一度 Contents オプションに入ったら、MLEADER Contents が入力できない。
+  (command "MLEADER" "H" '(0.0 0.0 0.0) '(10.0 10.0 0.0) "12345" )
+  (command "MLEADER" "L" '(10.0 10.0 0.0) '(0.0 20.0 0.0) "Test" )
 	;;MLINE[マルチライン](DXF)
+  ;;がんばれはできそうだけど面倒なのでcommand関数から
+  (command "MLINE" '(0.0 0.0 0.0) '(100.0 100.0 0.0) "")
 	;;MTEXT[マルチ テキスト](DXF)
   ;;位置合わせを省略すると 1=左上になる
   (entmake '((0 . "MTEXT")(10 0.0 0.0 0.0)(40 . 2.5)(1 . "something else")))
 	;;OLEFRAME[OLE フレーム](DXF)
   ;;今は作ることができません
 	;;OLE2FRAME(DXF)
+  ;;埋め込み型もリンク型もコマンドからしか作れません。DXFでは情報が不足です。
 	;;POINT[点](DXF)
   (setvar "PDMODE" 3)
   (entmake '((0 . "POINT")(10 5.0 5.0 0.0)))
@@ -165,6 +187,9 @@
 	;;RAY[放射線](DXF)
   (entmake '((0 . "RAY")(10 20.0 0.0 0.0)(11 1.0 -1.0 0.0)))
 	;;REGION[リージョン](DXF)
+  ;;コマンドから作るしかありません。図形選択でループを構成する図形を複数選択できます。
+  ;;ループが複数の場合、複数のリージョンができるので UNION や SUBTRACT で合成リージョンを作ります。
+  (command "region" (ssget ":S"))
 	;;SECTION[断面](DXF)
 	;;SHAPE(DXF)
 	;;SOLID(DXF)
@@ -206,6 +231,7 @@
 	;;LAYOUT[レイアウト](DXF)
 	;;LIGHTLIST[光源一覧](DXF)
 	;;MATERIAL[マテリアル](DXF)
+	;;MLEADERSTYLE[マルチ引き出し線スタイル](DXF) 
 	;;MLINESTYLE[マルチライン スタイル](DXF)
 	;;OBJECT_PTR[オブジェクト プリンタ](DXF)
 	;;PLOTSETTINGS[印刷設定](DXF)
